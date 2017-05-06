@@ -1,10 +1,9 @@
-package epam.com
+package epam.com.utils
 
 /**
  * Created by Katerina_Karpenia on 5/5/2017.
  */
 
-    val gitHubApiUri = "https://api.github.com"
     val headerKey = "Authorization"
     val personalAccessToken = "Basic R2l0SHViVGVzdGluZ1Byb2plY3Q6OTQxYWM5YjE5MjAwYzM1ZWUwMTAyNDM4ODJkNWM2MTI1YzgzODQ4NQ=="
     val accountName = "GitHubTestingProject"
@@ -30,4 +29,17 @@ package epam.com
         }"""
 
     val upgradeAccountMessage = "Please upgrade your plan to create a new private repository"
+
+    val pathForCommit = "README.md"
+    val messageForCommit = "add new commit"
+    val bodyForCommitToRepository = """
+    {
+        "message": "${messageForCommit}",
+        "committer": {
+            "name": "Kate Karpenia",
+            "email": "kate.karpenia@gmail.com"
+        },
+        "content": "bXkgdXBkYXRlZCBmaWxlIGNvbnRlbnRz",
+        "sha": "fb617c9e42866ca24d0ff8e0c2725048f6f9530c"
+        }"""
 

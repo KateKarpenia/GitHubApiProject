@@ -2,6 +2,7 @@ package epam.com
 
 import com.jayway.restassured.RestAssured
 import com.jayway.restassured.RestAssured.given
+import epam.com.utils.*
 import org.hamcrest.CoreMatchers.containsString
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.Test
@@ -14,15 +15,15 @@ class GitHubApiTests : RestAssuredSupport() {
 
     @BeforeClass
     fun setup(){
-        RestAssured.baseURI = gitHubApiUri
+        RestAssured.baseURI = gitHubApiPath
     }
 
     @Test
     fun loginToGitHubTest() {
         given()
                 .header(headerKey, personalAccessToken)
-                .When().get("/users/${accountName}")
-                .then().log().all().body(containsString(accountName)).body(containsString(personalInfo)).statusCode(200)
+                .When().get(loginToGitHubPath)
+                .then().log().all().body(containsString(accountName)).body(containsString(personalInfo)).statusCode(success)
     }
 
     @Test
@@ -30,8 +31,8 @@ class GitHubApiTests : RestAssuredSupport() {
         given()
                 .header(headerKey, personalAccessToken)
                 .body(newRepoParams)
-                .When().post("/user/repos")
-                .then().log().all().body(containsString(newRepoName)).statusCode(201);
+                .When().post(createRepositoryPath)
+                .then().log().all().body(containsString(newRepoName)).statusCode(successfullyCreated);
 
     }
 
@@ -39,8 +40,8 @@ class GitHubApiTests : RestAssuredSupport() {
     fun deleteRepositoryTest() {
         given()
                 .header(headerKey, personalAccessToken)
-                .When().delete("/repos/${accountName}/${newRepoName}")
-                .then().log().all().statusCode(204)
+                .When().delete(deleteRepositoryPath)
+                .then().log().all().statusCode(successfullyDeleted)
     }
 
     @Test
@@ -48,8 +49,8 @@ class GitHubApiTests : RestAssuredSupport() {
         given()
                 .header(headerKey, personalAccessToken)
                 .body(bodyForRepositoryModification)
-                .When().patch("/repos/${accountName}/${defaultRepositoryName}")
-                .then().log().all().statusCode(200)
+                .When().patch(modifyRepositorySettingsPath)
+                .then().log().all().statusCode(success)
 
     }
 
@@ -58,8 +59,17 @@ class GitHubApiTests : RestAssuredSupport() {
         given()
                 .header(headerKey, personalAccessToken)
                 .body(bodyForPrivateRepositoryCreation)
-                .When().post("/user/repos")
-                .then().log().all().body(containsString(upgradeAccountMessage)).statusCode(422)
+                .When().post(createRepositoryPath)
+                .then().log().all().body(containsString(upgradeAccountMessage)).statusCode(unprocessableEntity)
+    }
+
+    @Test
+    fun commitToRepositoryTest() {
+        given()
+                .header(headerKey, personalAccessToken)
+                .body(bodyForCommitToRepository)
+                .When().put(commitToRepositoryPath)
+                .then().log().all().body(containsString(messageForCommit)).statusCode(success)
     }
 
 }
