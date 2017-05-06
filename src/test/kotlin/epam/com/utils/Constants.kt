@@ -9,22 +9,24 @@ package epam.com.utils
     val accountName = "GitHubTestingProject"
     val personalInfo = "private_repos"
     val defaultRepositoryName = "SampleRepository"
-    val newRepoName = "GitHubRepoNew"
-    val newRepoParams = """
+    val repositoryName = "GitHubRepoNew"
+    val fullRepositoryName = "${accountName}/${repositoryName}"
+    val newRepositoryParams = """
     {
-        "name": "${newRepoName}"
+        "name": "${repositoryName}"
         }"""
 
+    val repositoryDescription = "This repository was modified again"
     val bodyForRepositoryModification = """
     {
         "name": "${defaultRepositoryName}",
-        "description": "This repository was modified again",
+        "description": "${repositoryDescription}",
         "homepage": "https://github.com"
         }"""
 
     val bodyForPrivateRepositoryCreation = """
     {
-        "name": "${newRepoName}",
+        "name": "${repositoryName}",
         "private": true
         }"""
 

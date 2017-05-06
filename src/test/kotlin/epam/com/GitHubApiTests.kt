@@ -30,9 +30,13 @@ class GitHubApiTests : RestAssuredSupport() {
     fun createDefaultRepositoryTest() {
         given()
                 .header(headerKey, personalAccessToken)
-                .body(newRepoParams)
+                .body(newRepositoryParams)
                 .When().post(createRepositoryPath)
-                .then().log().all().body(containsString(newRepoName)).statusCode(successfullyCreated);
+                .then().log().all().body(containsString(repositoryName)).statusCode(successfullyCreated);
+        given()
+                .header(headerKey, personalAccessToken)
+                .When().get(getRepositoryPath)
+                .then().log().all().body(containsString(fullRepositoryName)).statusCode(success)
 
     }
 
@@ -40,7 +44,7 @@ class GitHubApiTests : RestAssuredSupport() {
     fun deleteRepositoryTest() {
         given()
                 .header(headerKey, personalAccessToken)
-                .When().delete(deleteRepositoryPath)
+                .When().delete(getRepositoryPath)
                 .then().log().all().statusCode(successfullyDeleted)
     }
 
@@ -49,8 +53,12 @@ class GitHubApiTests : RestAssuredSupport() {
         given()
                 .header(headerKey, personalAccessToken)
                 .body(bodyForRepositoryModification)
-                .When().patch(modifyRepositorySettingsPath)
+                .When().patch(defaultRepositorySettingsPath)
                 .then().log().all().statusCode(success)
+        given()
+                .header(headerKey, personalAccessToken)
+                .When().get(defaultRepositorySettingsPath)
+                .then().body(containsString(repositoryDescription)).statusCode(success)
 
     }
 

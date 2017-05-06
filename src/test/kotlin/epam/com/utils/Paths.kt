@@ -7,6 +7,6 @@ package epam.com.utils
     val gitHubApiPath = "https://api.github.com"
     val loginToGitHubPath = "/users/${accountName}"
     val createRepositoryPath = "/user/repos"
-    val deleteRepositoryPath = "/repos/${accountName}/${newRepoName}"
-    val modifyRepositorySettingsPath = "/repos/${accountName}/${defaultRepositoryName}"
+    val getRepositoryPath = "/repos/${accountName}/${repositoryName}"
+    val defaultRepositorySettingsPath = "/repos/${accountName}/${defaultRepositoryName}"
     val commitToRepositoryPath = "/repos/${accountName}/${defaultRepositoryName}/contents/${pathForCommit}"
