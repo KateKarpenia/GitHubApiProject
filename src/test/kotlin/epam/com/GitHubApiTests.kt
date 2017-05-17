@@ -1,11 +1,19 @@
 package epam.com
 
-import com.jayway.restassured.RestAssured
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.jayway.restassured.RestAssured.given
+import com.jayway.restassured.builder.RequestSpecBuilder
+import com.jayway.restassured.filter.log.RequestLoggingFilter
+import com.jayway.restassured.filter.log.ResponseLoggingFilter
+import com.jayway.restassured.specification.RequestSpecification
 import epam.com.utils.*
 import org.hamcrest.CoreMatchers.containsString
 import org.testng.annotations.BeforeClass
 import org.testng.annotations.Test
+import com.fasterxml.jackson.module.kotlin.*
+import epam.com.entity.Commit
+import epam.com.entity.Committer
+import epam.com.entity.Repository
 
 /**
  * Created by Katerina_Karpenia on 5/5/2017.
@@ -13,71 +21,93 @@ import org.testng.annotations.Test
 
 class GitHubApiTests : RestAssuredSupport() {
 
+    lateinit var requestSpecification: RequestSpecification
+    var mapper: ObjectMapper = jacksonObjectMapper()
+
     @BeforeClass
-    fun setup(){
-        RestAssured.baseURI = gitHubApiPath
+    fun setup() {
+        requestSpecification = RequestSpecBuilder()
+                .setBaseUri(GITHUB_API_PATH)
+                .addHeader(HEADER_KEY, PERSONAL_ACCESS_TOKEN)
+                .addFilter(RequestLoggingFilter())
+                .addFilter(ResponseLoggingFilter())
+                .build()
     }
 
     @Test
     fun loginToGitHubTest() {
+
         given()
-                .header(headerKey, personalAccessToken)
-                .When().get(loginToGitHubPath)
-                .then().log().all().body(containsString(accountName)).body(containsString(personalInfo)).statusCode(success)
+                .spec(requestSpecification)
+                .When().get(LOGIN_TO_GITHUB_PATH)
+                .then().body(containsString(ACCOUNT_NAME)).body(containsString(PERSONAL_INFO)).statusCode(SUCCESS)
     }
 
     @Test
     fun createDefaultRepositoryTest() {
-        given()
-                .header(headerKey, personalAccessToken)
-                .body(newRepositoryParams)
-                .When().post(createRepositoryPath)
-                .then().log().all().body(containsString(repositoryName)).statusCode(successfullyCreated);
-        given()
-                .header(headerKey, personalAccessToken)
-                .When().get(getRepositoryPath)
-                .then().log().all().body(containsString(fullRepositoryName)).statusCode(success)
 
-    }
+        val repositoryForCreation = Repository (REPOSITORY_NAME, REPOSITORY_DESCRIPTION, HOMEPAGE, false)
+        val bodyForRepositoryCreation = mapper.writeValueAsString(repositoryForCreation)
 
-    @Test(dependsOnMethods = arrayOf("createDefaultRepositoryTest"))
-    fun deleteRepositoryTest() {
         given()
-                .header(headerKey, personalAccessToken)
-                .When().delete(getRepositoryPath)
-                .then().log().all().statusCode(successfullyDeleted)
+                .spec(requestSpecification)
+                .body(bodyForRepositoryCreation)
+                .When().post(CREATE_REPOSITORY_PATH)
+                .then().body(containsString(REPOSITORY_NAME)).statusCode(SUCCESSFULLY_CREATED);
+        given()
+                .spec(requestSpecification)
+                .When().get(GET_REPOSITORY_PATH)
+                .then().body(containsString(FULL_REPOSITORY_NAME)).statusCode(SUCCESS)
+
+        given()
+                .spec(requestSpecification)
+                .When().delete(GET_REPOSITORY_PATH)
+                .then().statusCode(SUCCESSFULLY_DELETED)
     }
 
     @Test
     fun modifyRepositorySettingsTest() {
+
+        val repositoryForModification = Repository (DEFAULT_REPOSITORY_NAME, REPOSITORY_DESCRIPTION, HOMEPAGE, false)
+        val bodyForRepositoryModification = mapper.writeValueAsString(repositoryForModification)
+
         given()
-                .header(headerKey, personalAccessToken)
+                .spec(requestSpecification)
                 .body(bodyForRepositoryModification)
-                .When().patch(defaultRepositorySettingsPath)
-                .then().log().all().statusCode(success)
+                .When().patch(DEFAULT_REPOSITORY_SETTINGS_PATH)
+                .then().statusCode(SUCCESS)
         given()
-                .header(headerKey, personalAccessToken)
-                .When().get(defaultRepositorySettingsPath)
-                .then().body(containsString(repositoryDescription)).statusCode(success)
+                .spec(requestSpecification)
+                .When().get(DEFAULT_REPOSITORY_SETTINGS_PATH)
+                .then().body(containsString(REPOSITORY_DESCRIPTION)).statusCode(SUCCESS)
 
     }
 
     @Test
     fun cannotCreatePrivateRepositoryTest() {
+
+        val privateRepositoryForCreation = Repository (REPOSITORY_NAME, REPOSITORY_DESCRIPTION, HOMEPAGE, true)
+        val bodyForPrivateRepositoryCreation = mapper.writeValueAsString(privateRepositoryForCreation)
+
         given()
-                .header(headerKey, personalAccessToken)
+                .spec(requestSpecification)
                 .body(bodyForPrivateRepositoryCreation)
-                .When().post(createRepositoryPath)
-                .then().log().all().body(containsString(upgradeAccountMessage)).statusCode(unprocessableEntity)
+                .When().post(CREATE_REPOSITORY_PATH)
+                .then().body(containsString(UPGRADE_ACCOUNT_MESSAGE)).statusCode(UNPROCESSABLE_ENTITY)
     }
 
     @Test
     fun commitToRepositoryTest() {
+
+        val committer = Committer (COMMITTER_NAME, COMMITTER_EMAIL)
+        val commitToRepository = Commit (MESSAGE_FOR_COMMIT, committer, CONTENT_FOR_COMMIT, SHA)
+        val bodyForCommit = mapper.writeValueAsString(commitToRepository)
+
         given()
-                .header(headerKey, personalAccessToken)
-                .body(bodyForCommitToRepository)
-                .When().put(commitToRepositoryPath)
-                .then().log().all().body(containsString(messageForCommit)).statusCode(success)
+                .spec(requestSpecification)
+                .body(bodyForCommit)
+                .When().put(COMMIT_TO_REPOSITORY_PATH)
+                .then().body(containsString(MESSAGE_FOR_COMMIT)).statusCode(SUCCESS)
     }
 
 }

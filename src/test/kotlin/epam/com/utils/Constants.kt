@@ -4,44 +4,20 @@ package epam.com.utils
  * Created by Katerina_Karpenia on 5/5/2017.
  */
 
-    val headerKey = "Authorization"
-    val personalAccessToken = "Basic R2l0SHViVGVzdGluZ1Byb2plY3Q6OTQxYWM5YjE5MjAwYzM1ZWUwMTAyNDM4ODJkNWM2MTI1YzgzODQ4NQ=="
-    val accountName = "GitHubTestingProject"
-    val personalInfo = "private_repos"
-    val defaultRepositoryName = "SampleRepository"
-    val repositoryName = "GitHubRepoNew"
-    val fullRepositoryName = "${accountName}/${repositoryName}"
-    val newRepositoryParams = """
-    {
-        "name": "${repositoryName}"
-        }"""
-
-    val repositoryDescription = "This repository was modified again"
-    val bodyForRepositoryModification = """
-    {
-        "name": "${defaultRepositoryName}",
-        "description": "${repositoryDescription}",
-        "homepage": "https://github.com"
-        }"""
-
-    val bodyForPrivateRepositoryCreation = """
-    {
-        "name": "${repositoryName}",
-        "private": true
-        }"""
-
-    val upgradeAccountMessage = "Please upgrade your plan to create a new private repository"
-
-    val pathForCommit = "README.md"
-    val messageForCommit = "add new commit"
-    val bodyForCommitToRepository = """
-    {
-        "message": "${messageForCommit}",
-        "committer": {
-            "name": "Kate Karpenia",
-            "email": "kate.karpenia@gmail.com"
-        },
-        "content": "bXkgdXBkYXRlZCBmaWxlIGNvbnRlbnRz",
-        "sha": "fb617c9e42866ca24d0ff8e0c2725048f6f9530c"
-        }"""
+    const val HEADER_KEY: String = "Authorization"
+    const val PERSONAL_ACCESS_TOKEN: String = "Basic R2l0SHViVGVzdGluZ1Byb2plY3Q6OTQxYWM5YjE5MjAwYzM1ZWUwMTAyNDM4ODJkNWM2MTI1YzgzODQ4NQ=="
+    const val ACCOUNT_NAME: String = "GitHubTestingProject"
+    const val PERSONAL_INFO: String = "private_repos"
+    const val DEFAULT_REPOSITORY_NAME: String = "SampleRepository"
+    const val REPOSITORY_NAME: String = "GitHubRepoNew"
+    const val HOMEPAGE: String = "https://github.com"
+    const val REPOSITORY_DESCRIPTION: String = "GitHub Repository"
+    const val UPGRADE_ACCOUNT_MESSAGE: String = "Please upgrade your plan to create a new private repository"
+    const val PATH_FOR_COMMIT: String = "README.md"
+    const val MESSAGE_FOR_COMMIT: String = "add new commit"
+    const val COMMITTER_NAME: String = "Kate Karpenia"
+    const val COMMITTER_EMAIL: String = "kate.karpenia@gmail.com"
+    const val CONTENT_FOR_COMMIT: String = "bXkgdXBkYXRlZCBmaWxlIGNvbnRlbnRz"
+    const val SHA: String = "fb617c9e42866ca24d0ff8e0c2725048f6f9530c"
+    val FULL_REPOSITORY_NAME: String = "${ACCOUNT_NAME}/${REPOSITORY_NAME}"
 

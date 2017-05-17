@@ -4,7 +4,7 @@ package epam.com.utils
  * Created by Katerina_Karpenia on 5/6/2017.
  */
 
-    val success = 200
-    val successfullyCreated = 201
-    val successfullyDeleted = 204
-    val unprocessableEntity = 422
+    const val SUCCESS: Int = 200
+    const val SUCCESSFULLY_CREATED: Int = 201
+    const val SUCCESSFULLY_DELETED: Int = 204
+    const val UNPROCESSABLE_ENTITY: Int = 422
