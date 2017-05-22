@@ -1,7 +1,6 @@
 package epam.com
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.jayway.restassured.RestAssured.given
 import com.jayway.restassured.builder.RequestSpecBuilder
 import com.jayway.restassured.filter.log.RequestLoggingFilter
 import com.jayway.restassured.filter.log.ResponseLoggingFilter
@@ -37,10 +36,10 @@ class GitHubApiTests : RestAssuredSupport() {
     @Test
     fun loginToGitHubTest() {
 
-        given()
+        Given()
                 .spec(requestSpecification)
                 .When().get(LOGIN_TO_GITHUB_PATH)
-                .then().body(containsString(ACCOUNT_NAME)).body(containsString(PERSONAL_INFO)).statusCode(SUCCESS)
+                .Then().body(containsString(ACCOUNT_NAME)).body(containsString(PERSONAL_INFO)).statusCode(SUCCESS)
     }
 
     @Test
@@ -49,20 +48,20 @@ class GitHubApiTests : RestAssuredSupport() {
         val repositoryForCreation = Repository (REPOSITORY_NAME, REPOSITORY_DESCRIPTION, HOMEPAGE, false)
         val bodyForRepositoryCreation = mapper.writeValueAsString(repositoryForCreation)
 
-        given()
+        Given()
                 .spec(requestSpecification)
                 .body(bodyForRepositoryCreation)
                 .When().post(CREATE_REPOSITORY_PATH)
-                .then().body(containsString(REPOSITORY_NAME)).statusCode(SUCCESSFULLY_CREATED);
-        given()
+                .Then().body(containsString(REPOSITORY_NAME)).statusCode(SUCCESSFULLY_CREATED);
+        Given()
                 .spec(requestSpecification)
                 .When().get(GET_REPOSITORY_PATH)
-                .then().body(containsString(FULL_REPOSITORY_NAME)).statusCode(SUCCESS)
+                .Then().body(containsString(FULL_REPOSITORY_NAME)).statusCode(SUCCESS)
 
-        given()
+        Given()
                 .spec(requestSpecification)
                 .When().delete(GET_REPOSITORY_PATH)
-                .then().statusCode(SUCCESSFULLY_DELETED)
+                .Then().statusCode(SUCCESSFULLY_DELETED)
     }
 
     @Test
@@ -71,15 +70,15 @@ class GitHubApiTests : RestAssuredSupport() {
         val repositoryForModification = Repository (DEFAULT_REPOSITORY_NAME, REPOSITORY_DESCRIPTION, HOMEPAGE, false)
         val bodyForRepositoryModification = mapper.writeValueAsString(repositoryForModification)
 
-        given()
+        Given()
                 .spec(requestSpecification)
                 .body(bodyForRepositoryModification)
                 .When().patch(DEFAULT_REPOSITORY_SETTINGS_PATH)
-                .then().statusCode(SUCCESS)
-        given()
+                .Then().statusCode(SUCCESS)
+        Given()
                 .spec(requestSpecification)
                 .When().get(DEFAULT_REPOSITORY_SETTINGS_PATH)
-                .then().body(containsString(REPOSITORY_DESCRIPTION)).statusCode(SUCCESS)
+                .Then().body(containsString(REPOSITORY_DESCRIPTION)).statusCode(SUCCESS)
 
     }
 
@@ -89,11 +88,11 @@ class GitHubApiTests : RestAssuredSupport() {
         val privateRepositoryForCreation = Repository (REPOSITORY_NAME, REPOSITORY_DESCRIPTION, HOMEPAGE, true)
         val bodyForPrivateRepositoryCreation = mapper.writeValueAsString(privateRepositoryForCreation)
 
-        given()
+        Given()
                 .spec(requestSpecification)
                 .body(bodyForPrivateRepositoryCreation)
                 .When().post(CREATE_REPOSITORY_PATH)
-                .then().body(containsString(UPGRADE_ACCOUNT_MESSAGE)).statusCode(UNPROCESSABLE_ENTITY)
+                .Then().body(containsString(UPGRADE_ACCOUNT_MESSAGE)).statusCode(UNPROCESSABLE_ENTITY)
     }
 
     @Test
@@ -103,13 +102,14 @@ class GitHubApiTests : RestAssuredSupport() {
         val commitToRepository = Commit (MESSAGE_FOR_COMMIT, committer, CONTENT_FOR_COMMIT, SHA)
         val bodyForCommit = mapper.writeValueAsString(commitToRepository)
 
-        given()
+        Given()
                 .spec(requestSpecification)
                 .body(bodyForCommit)
                 .When().put(COMMIT_TO_REPOSITORY_PATH)
-                .then().body(containsString(MESSAGE_FOR_COMMIT)).statusCode(SUCCESS)
+                .Then().body(containsString(MESSAGE_FOR_COMMIT)).statusCode(SUCCESS)
     }
 
 }
+
 
 
